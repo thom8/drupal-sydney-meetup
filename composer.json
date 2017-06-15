@@ -1,0 +1,134 @@
+{
+    "name": "thom8/drupal-sydney",
+    "description": "Config split meetup demo",
+    "type": "project",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "Thom Toogood"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "harvesthq/chosen",
+                "version": "1.5.1",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/harvesthq/chosen/releases/download/v1.5.1/chosen_v1.5.1.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        }
+    ],
+    "require": {
+        "composer/installers": "^1.2",
+        "cweagans/composer-patches": "^1.6",
+        "drupal-composer/drupal-scaffold": "^2.2",
+        "drupal/chosen": "^2.3",
+        "drupal/config_installer": "dev-1.x",
+        "drupal/config_split": "^1.0@beta",
+        "drupal/console": "~1.0",
+        "drupal/core": "~8.0",
+        "drupal/environment_indicator": "^3.0",
+        "drush/drush": "~8.0",
+        "harvesthq/chosen": "^1.5",
+        "webflo/drupal-finder": "^0.3.0",
+        "webmozart/path-util": "^2.3"
+    },
+    "require-dev": {
+        "beet/box": "^0.6.2",
+        "behat/mink": "~1.7",
+        "behat/mink-goutte-driver": "~1.2",
+        "drupal/devel": "^1.0@RC",
+        "jcalderonzumba/gastonjs": "~1.0.2",
+        "jcalderonzumba/mink-phantomjs-driver": "~0.3.1",
+        "mikey179/vfsstream": "~1.2",
+        "phpunit/phpunit": ">=4.8.28 <5",
+        "symfony/css-selector": "~2.8"
+    },
+    "conflict": {
+        "drupal/drupal": "*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+      "sort-packages": true
+    },
+    "autoload": {
+        "classmap": [
+            "scripts/composer/ScriptHandler.php"
+        ]
+    },
+    "scripts": {
+        "up": [
+            "@composer install -n --prefer-dist --ansi",
+            "vagrant up --color",
+            "@setup"
+        ],
+        "setup": [
+            "@composer install -n --prefer-dist --ansi",
+            "@install-site",
+            "@sync-db",
+            "@config-import"
+        ],
+        "test": "@composer validate",
+        "install-site": "drush @sydney.prod si -y config_installer --account-name=admin --account-pass=admin",
+        "sync-db": "drush sql-sync -y @sydney.prod @sydney.dev --create-db",
+        "config-import": "drush use @sydney.dev && drush cr && drush cim -y",
+        "dev-login": "drush @sydney.dev uli",
+        "prod-login": "drush @sydney.prod uli",
+        "reset": [
+            "vagrant destroy -f",
+            "@up"
+        ],
+        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
+        "pre-install-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+        ],
+        "pre-update-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+        ],
+        "post-install-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
+        ],
+        "post-update-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
+        ]
+    },
+    "extra": {
+        "installer-paths": {
+            "web/core": ["type:drupal-core"],
+            "web/libraries/{$name}": ["type:drupal-library"],
+            "web/modules/contrib/{$name}": ["type:drupal-module"],
+            "web/profiles/contrib/{$name}": ["type:drupal-profile"],
+            "web/themes/contrib/{$name}": ["type:drupal-theme"],
+            "drush/contrib/{$name}": ["type:drupal-drush"]
+        },
+        "beetbox": {
+            "vagrant_ip": "192.168.28.28",
+            "beet_root": "{{ beet_base }}/web",
+            "beet_domain": "prod.sydney-drupal.local",
+            "beet_aliases": [
+              "dev.sydney-drupal.local"
+            ]
+        },
+        "patches": {
+            "drupal/core": {
+                "Backwards variables in Install profile validation error message": "https://www.drupal.org/files/issues/backwards_variables_in_message-2867834-10.patch",
+                "Allow a profile to be installed from existing config": "https://www.drupal.org/files/issues/2873259-4.patch"
+            },
+            "drupal/config_installer": {
+                "Trying to modifying settings.php when it is read-only": "https://www.drupal.org/files/issues/2819385-5.patch"
+            }
+        }
+    }
+}

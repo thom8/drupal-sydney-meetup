@@ -1,0 +1,23 @@
+uuid: ef6ffca5-a84c-4940-b03b-bf306c32b75f
+langcode: en
+status: true
+dependencies:
+  module:
+    - devel
+  theme:
+    - bartik
+id: switchuser
+theme: bartik
+region: sidebar_first
+weight: -5
+provider: null
+plugin: devel_switch_user
+settings:
+  id: devel_switch_user
+  label: 'Switch user'
+  provider: devel
+  label_display: visible
+  list_size: 12
+  include_anon: false
+  show_form: true
+visibility: {  }

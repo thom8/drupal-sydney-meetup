@@ -1,0 +1,15 @@
+uuid: e017738e-bba3-4004-9024-e4710c007619
+langcode: en
+status: false
+dependencies: {  }
+id: prod
+label: prod
+folder: ../config/prod
+module:
+  syslog: 0
+theme: {  }
+blacklist: {  }
+graylist: {  }
+graylist_dependents: true
+graylist_skip_equal: true
+weight: 0
